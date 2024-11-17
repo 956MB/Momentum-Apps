@@ -1,3 +1,7 @@
+## 1.6
+
+* Added extra functions for the **random** module.
+
 ## 1.5
 
 * Added **io** module for basic file system operations.
