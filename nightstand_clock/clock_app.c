@@ -100,7 +100,7 @@ void elements_progress_bar_vertical(
     uint8_t height,
     float progress) {
     furi_assert(canvas);
-    furi_assert((progress >= 0) && (progress <= 1.0));
+    furi_assert(((float)progress >= 0.0f) && ((float)progress <= 1.0f));
     uint8_t width = 9;
 
     uint8_t progress_length = roundf((1.f - progress) * (height - 2));
@@ -148,15 +148,16 @@ static void clock_render_callback(Canvas* const canvas, void* ctx) {
         snprintf(
             time_string, TIME_LEN, CLOCK_TIME_FORMAT, curr_dt.hour, curr_dt.minute, curr_dt.second);
     } else {
-        bool pm = curr_dt.hour > 12;
         bool pm12 = curr_dt.hour >= 12;
-        snprintf(
-            time_string,
-            TIME_LEN,
-            CLOCK_TIME_FORMAT,
-            pm ? curr_dt.hour - 12 : curr_dt.hour,
-            curr_dt.minute,
-            curr_dt.second);
+        uint8_t hour = curr_dt.hour;
+
+        if(hour > 12) {
+            hour -= 12;
+        } else if(hour == 0) {
+            hour = (state->midnight_format == LocaleMidnightFormatZero) ? 0 : 12;
+        }
+
+        snprintf(time_string, TIME_LEN, CLOCK_TIME_FORMAT, hour, curr_dt.minute, curr_dt.second);
 
         snprintf(
             meridian_string,
@@ -210,7 +211,7 @@ static void clock_render_callback(Canvas* const canvas, void* ctx) {
 
 static void clock_state_init(ClockState* const state) {
     state->time_format = locale_get_time_format();
-
+    state->midnight_format = locale_get_midnight_format();
     state->date_format = locale_get_date_format();
 
     //FURI_LOG_D(TAG, "Time format: %s", state->settings.time_format == H12 ? "12h" : "24h");

@@ -36,4 +36,5 @@ typedef struct {
     uint32_t timer_start_timestamp;
     uint32_t timer_stopped_seconds;
     bool timer_running;
+    LocaleMidnightFormat midnight_format;
 } ClockState;
