@@ -122,18 +122,18 @@ static void xremote_scene_transmit_end_scene(XRemote* app) {
 
 static void xremote_scene_transmit_run_single_transmit(XRemote* app) {
     CrossRemote* remote = app->cross_remote;
-    if (xremote_cross_remote_get_transmitting(remote) == XRemoteTransmittingIdle) {
+    if(xremote_cross_remote_get_transmitting(remote) == XRemoteTransmittingIdle) {
         xremote_cross_remote_set_transmitting(remote, XRemoteTransmittingStart);
         CrossRemoteItem* item = xremote_cross_remote_get_item(remote, app->transmit_item);
         xremote_scene_transmit_send_signal(app, item);
-    } else if (xremote_cross_remote_get_transmitting(remote) == XRemoteTransmittingStopSubghz) {
+    } else if(xremote_cross_remote_get_transmitting(remote) == XRemoteTransmittingStopSubghz) {
         app->transmit_item++;
         app->state_notifications = SubGhzNotificationStateIDLE;
         app->transmitting = false;
         subghz_txrx_stop(app->subghz->txrx);
         xremote_scene_ir_notification_message(app, SubGhzNotificationMessageBlinkStop);
         xremote_cross_remote_set_transmitting(remote, XRemoteTransmittingIdle);
-    } else if (xremote_cross_remote_get_transmitting(remote) == XRemoteTransmittingStop) {
+    } else if(xremote_cross_remote_get_transmitting(remote) == XRemoteTransmittingStop) {
         app->transmit_item++;
         xremote_cross_remote_set_transmitting(remote, XRemoteTransmittingIdle);
     }
@@ -142,11 +142,11 @@ static void xremote_scene_transmit_run_single_transmit(XRemote* app) {
 static void xremote_scene_transmit_run_next_transmission(XRemote* app) {
     CrossRemote* remote = app->cross_remote;
     size_t item_count = xremote_cross_remote_get_item_count(remote);
-    if (app->transmit_item < item_count) {
+    if(app->transmit_item < item_count) {
         xremote_scene_transmit_run_single_transmit(app);
         return;
     }
-    if (app->loop_transmit && !app->stop_transmit) {
+    if(app->loop_transmit && !app->stop_transmit) {
         app->transmit_item = 0;
         return;
     }
@@ -165,7 +165,7 @@ void xremote_scene_transmit_on_enter(void* context) {
 bool xremote_scene_transmit_on_event(void* context, SceneManagerEvent event) {
     XRemote* app = context;
     bool consumed = false;
-    
+
     if(event.type == SceneManagerEventTypeCustom) {
         FURI_LOG_D(TAG, "Custom Event");
         switch(event.event) {

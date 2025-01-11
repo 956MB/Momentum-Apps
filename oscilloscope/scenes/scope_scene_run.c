@@ -74,20 +74,20 @@ uint8_t pause = 0; // Whether we want to pause output or not
 enum measureenum type; // Type of measurement we are performing
 int toggle = 0; // Used for toggling output GPIO, only used in testing
 uint32_t adc_buffer; // ADC buffer size
-int16_t *index_crossings; // Indexes of zero crossings
-float *data; // Shift data across virtual zero line
-float *crossings;
-float complex *fft_data; // Real data, transformed to complex data via FFT
-float *fft_power; // Power data from FFT
+int16_t* index_crossings; // Indexes of zero crossings
+float* data; // Shift data across virtual zero line
+float* crossings;
+float complex* fft_data; // Real data, transformed to complex data via FFT
+float* fft_power; // Power data from FFT
 
 void Error_Handler() {
     while(1) {
     }
 }
 
-uint16_t *aADCxConvertedData; // Array that ADC data is copied to, via DMA
-__IO uint16_t *aADCxConvertedData_Voltage_mVoltA; // Data is converted to range from 0 to 2500
-__IO uint16_t *aADCxConvertedData_Voltage_mVoltB; // Data is converted to range from 0 to 2500
+uint16_t* aADCxConvertedData; // Array that ADC data is copied to, via DMA
+__IO uint16_t* aADCxConvertedData_Voltage_mVoltA; // Data is converted to range from 0 to 2500
+__IO uint16_t* aADCxConvertedData_Voltage_mVoltB; // Data is converted to range from 0 to 2500
 __IO uint8_t ubDmaTransferStatus = 2; // DMA transfer status
 
 __IO uint16_t* mvoltWrite; // Pointer to area we write converted voltage data to
@@ -279,9 +279,7 @@ void swap(__IO uint16_t** a, __IO uint16_t** b) {
 
 void AdcDmaTransferComplete_Callback() {
     uint32_t tmp_index = 0;
-    for(tmp_index = (adc_buffer / 2);
-        tmp_index < adc_buffer;
-        tmp_index++) {
+    for(tmp_index = (adc_buffer / 2); tmp_index < adc_buffer; tmp_index++) {
         mvoltWrite[tmp_index] = __LL_ADC_CALC_DATA_TO_VOLTAGE(
             VDDA_APPLI, aADCxConvertedData[tmp_index], LL_ADC_RESOLUTION_12B);
     }
@@ -456,8 +454,9 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
         // see https://gist.github.com/endolith/255291 for Python version
         for(uint32_t x = 0; x < adc_buffer; x++) {
             if(index_crossings[x] == -1) break;
-            crossings[count++] =
-                (float)index_crossings[x] - data[index_crossings[x]] / (data[index_crossings[x] + 1] - data[index_crossings[x]]);
+            crossings[count++] = (float)index_crossings[x] -
+                                 data[index_crossings[x]] /
+                                     (data[index_crossings[x] + 1] - data[index_crossings[x]]);
         }
         float avg = 0.0;
         float countv = 0.0;
@@ -473,7 +472,7 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
         canvas_draw_str(canvas, 2, 20, buf1);
     } break;
     case m_fft: {
-        for (uint32_t i=0; i < adc_buffer; i++){
+        for(uint32_t i = 0; i < adc_buffer; i++) {
             fft_data[i] = ((float)mvoltDisplay[i] / 1000);
         }
 
@@ -483,9 +482,9 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
         // Find FFT bin, with highest power
         float max_val = -1;
         int idx = 0;
-        for (uint32_t i = 1; i < adc_buffer / 2; i++) {
+        for(uint32_t i = 1; i < adc_buffer / 2; i++) {
             float f = cabsf(fft_data[i]) * cabsf(fft_data[i]);
-            if (f > max_val) {
+            if(f > max_val) {
                 max_val = f;
                 idx = i;
             }
@@ -493,7 +492,7 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
         }
 
         // Display frequency of waveform
-        snprintf(buf1, 50, "Freq: %.1fHz",  (double)idx * ((double)freq / (double)adc_buffer));
+        snprintf(buf1, 50, "Freq: %.1fHz", (double)idx * ((double)freq / (double)adc_buffer));
         canvas_draw_str(canvas, 2, 10, buf1);
     } break;
     case m_voltage: {
@@ -512,24 +511,26 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
         break;
     }
 
-    if (type != m_fft){
+    if(type != m_fft) {
         // Draw lines between each data point
         // y should range from 0 to 63
         for(uint32_t x = 1; x < adc_buffer; x++) {
-            int32_t prev = 63 - (uint32_t)(((float)mvoltDisplay[x - 1] / (float)VDDA_APPLI) * scale * 63.0f);
-            int32_t cur = 63 - (uint32_t)(((float)mvoltDisplay[x] / (float)VDDA_APPLI) * scale * 63.0f);
+            int32_t prev =
+                63 - (uint32_t)(((float)mvoltDisplay[x - 1] / (float)VDDA_APPLI) * scale * 63.0f);
+            int32_t cur =
+                63 - (uint32_t)(((float)mvoltDisplay[x] / (float)VDDA_APPLI) * scale * 63.0f);
             if(!(prev < 0 && cur < 0))
                 canvas_draw_line(canvas, x - 1, clamp(prev, 0, 63), x, clamp(cur, 0, 63));
         }
     } else {
         // Process FFT data - excluding bin 0
         float max = 0;
-        for (uint32_t i = 1; i < adc_buffer / 2; i+= adc_buffer / 2 / 128) {
+        for(uint32_t i = 1; i < adc_buffer / 2; i += adc_buffer / 2 / 128) {
             float sum = 0;
-            for (uint32_t i2 = i; i2 < i + (adc_buffer / 2 / 128); i2++) {
+            for(uint32_t i2 = i; i2 < i + (adc_buffer / 2 / 128); i2++) {
                 sum += fft_power[i2];
             }
-            if (sum > max){
+            if(sum > max) {
                 max = sum;
             }
         }
@@ -539,9 +540,9 @@ static void app_draw_callback(Canvas* canvas, void* ctx) {
         // xpos: 0 to 127 for window size 512
         // xpos: 0 to 127 for window size 1024
         // y should range from 0 to 63
-        for (uint32_t i = 1; i < adc_buffer / 2; i+= adc_buffer / 2 / 128) {
+        for(uint32_t i = 1; i < adc_buffer / 2; i += adc_buffer / 2 / 128) {
             float sum = 0;
-            for (uint32_t i2 = i; i2 < i + (adc_buffer / 2 / 128); i2++) {
+            for(uint32_t i2 = i; i2 < i + (adc_buffer / 2 / 128); i2++) {
                 sum += fft_power[i2];
             }
             canvas_draw_line(canvas, xpos, 63, xpos, 63 - (uint32_t)(((sum / max) * 63.0f)));
@@ -562,7 +563,7 @@ static void app_input_callback(InputEvent* input_event, void* ctx) {
 }
 
 // Free malloc'd data
-void free_all(){
+void free_all() {
     free(aADCxConvertedData);
     free((void*)aADCxConvertedData_Voltage_mVoltA);
     free((void*)aADCxConvertedData_Voltage_mVoltB);
@@ -594,20 +595,20 @@ void scope_scene_run_on_enter(void* context) {
     type = app->measurement;
 
     adc_buffer = ADC_CONVERTED_DATA_BUFFER_SIZE;
-    if(type == m_fft)
-        adc_buffer = app->fft;
+    if(type == m_fft) adc_buffer = app->fft;
 
     aADCxConvertedData = malloc(adc_buffer * sizeof(uint16_t));
-    aADCxConvertedData_Voltage_mVoltA =  malloc(adc_buffer * sizeof(uint16_t));
-    aADCxConvertedData_Voltage_mVoltB =  malloc(adc_buffer * sizeof(uint16_t));
+    aADCxConvertedData_Voltage_mVoltA = malloc(adc_buffer * sizeof(uint16_t));
+    aADCxConvertedData_Voltage_mVoltB = malloc(adc_buffer * sizeof(uint16_t));
 
     index_crossings = malloc(adc_buffer * sizeof(int16_t));
-    data  = malloc(adc_buffer * sizeof(float));
+    data = malloc(adc_buffer * sizeof(float));
     crossings = malloc(adc_buffer * sizeof(float));
     fft_data = malloc(adc_buffer * sizeof(float complex));
     fft_power = malloc(adc_buffer * sizeof(float));
 
-    mvoltWrite = &aADCxConvertedData_Voltage_mVoltA[0]; // Pointer to area we write converted voltage data to
+    mvoltWrite =
+        &aADCxConvertedData_Voltage_mVoltA[0]; // Pointer to area we write converted voltage data to
     mvoltDisplay = &aADCxConvertedData_Voltage_mVoltB[0]; // Pointer to area of memory we display
 
     // Copy vector table, modify to use our own IRQ handlers
@@ -640,8 +641,7 @@ void scope_scene_run_on_enter(void* context) {
     MX_ADC1_Init();
 
     // Setup initial values from ADC
-    for(tmp_index_adc_converted_data = 0;
-        tmp_index_adc_converted_data < adc_buffer;
+    for(tmp_index_adc_converted_data = 0; tmp_index_adc_converted_data < adc_buffer;
         tmp_index_adc_converted_data++) {
         aADCxConvertedData[tmp_index_adc_converted_data] = VAR_CONVERTED_DATA_INIT_VALUE;
         aADCxConvertedData_Voltage_mVoltA[tmp_index_adc_converted_data] = 0;
@@ -725,8 +725,7 @@ void scope_scene_run_on_enter(void* context) {
         view_port_free(view_port);
 
         app->data = malloc(sizeof(uint16_t) * adc_buffer);
-        memcpy(
-            app->data, (uint16_t*)mvoltDisplay, sizeof(uint16_t) * adc_buffer);
+        memcpy(app->data, (uint16_t*)mvoltDisplay, sizeof(uint16_t) * adc_buffer);
         free_all();
         scene_manager_next_scene(app->scene_manager, ScopeSceneSave);
     }

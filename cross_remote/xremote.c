@@ -174,7 +174,7 @@ void xremote_app_free(XRemote* app) {
 
     app->gui = NULL;
     app->notification = NULL;
-    
+
     //Remove whatever is left
     free(app);
 }

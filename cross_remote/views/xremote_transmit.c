@@ -53,11 +53,11 @@ void xremote_transmit_draw_ir(Canvas* canvas, XRemoteTransmitModel* model) {
     canvas_draw_str_aligned(canvas, 74, 15, AlignLeft, AlignTop, "Infrared");
     canvas_draw_str_aligned(canvas, 74, 25, AlignLeft, AlignTop, model->name);
 
-    if (model->time == 0) {
+    if(model->time == 0) {
         canvas_draw_icon(canvas, 36, 2, &I_ir_ani_1_32x22);
-    } else if (model->time == 1) {
+    } else if(model->time == 1) {
         canvas_draw_icon(canvas, 36, 2, &I_ir_ani_2_32x22);
-    } else if (model->time == 2) {
+    } else if(model->time == 2) {
         canvas_draw_icon(canvas, 36, 2, &I_ir_ani_3_32x22);
     }
 }
@@ -73,11 +73,11 @@ void xremote_transmit_draw_pause(Canvas* canvas, XRemoteTransmitModel* model) {
     canvas_draw_str_aligned(canvas, 74, 15, AlignLeft, AlignTop, "Sequence");
     canvas_draw_str_aligned(canvas, 74, 25, AlignLeft, AlignTop, model->name);
 
-    if (model->time == 0) {
+    if(model->time == 0) {
         canvas_draw_icon(canvas, 9, 28, &I_pause_ani_1_22x23);
-    } else if (model->time == 1) {
+    } else if(model->time == 1) {
         canvas_draw_icon(canvas, 9, 28, &I_pause_ani_2_22x23);
-    } else if (model->time == 2) {
+    } else if(model->time == 2) {
         canvas_draw_icon(canvas, 9, 28, &I_pause_ani_3_22x23);
     }
 }
@@ -93,11 +93,11 @@ void xremote_transmit_draw_subghz(Canvas* canvas, XRemoteTransmitModel* model) {
     canvas_draw_str_aligned(canvas, 74, 15, AlignLeft, AlignTop, "SubGhz");
     canvas_draw_str_aligned(canvas, 74, 25, AlignLeft, AlignTop, model->name);
 
-    if (model->time == 0) {
+    if(model->time == 0) {
         canvas_draw_icon(canvas, 15, 1, &I_sg_ani_1_19x13);
-    } else if (model->time == 1) {
+    } else if(model->time == 1) {
         canvas_draw_icon(canvas, 15, 1, &I_sg_ani_2_19x13);
-    } else if (model->time == 2) {
+    } else if(model->time == 2) {
         canvas_draw_icon(canvas, 15, 1, &I_sg_ani_3_19x13);
     }
 }
@@ -110,7 +110,7 @@ void xremote_transmit_draw(Canvas* canvas, XRemoteTransmitModel* model) {
     } else if(model->type == XRemoteRemoteItemTypePause) {
         xremote_transmit_draw_pause(canvas, model);
     }
-    if (model->time > 2) {
+    if(model->time > 2) {
         model->time = 0;
     }
     elements_button_right(canvas, "exit");

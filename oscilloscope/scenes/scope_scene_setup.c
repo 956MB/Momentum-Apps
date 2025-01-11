@@ -54,8 +54,7 @@ void scope_scene_setup_on_enter(void* context) {
         }
     }
 
-    item = variable_item_list_add(
-        var_item_list, "FFT window", COUNT_OF(fft_list), fft_cb, app);
+    item = variable_item_list_add(var_item_list, "FFT window", COUNT_OF(fft_list), fft_cb, app);
 
     for(uint32_t i = 0; i < COUNT_OF(fft_list); i++) {
         if(fft_list[i].window == app->fft) {
@@ -65,8 +64,7 @@ void scope_scene_setup_on_enter(void* context) {
         }
     }
 
-    item = variable_item_list_add(
-        var_item_list, "Scale", COUNT_OF(scale_list), scale_cb, app);
+    item = variable_item_list_add(var_item_list, "Scale", COUNT_OF(scale_list), scale_cb, app);
 
     for(uint32_t i = 0; i < COUNT_OF(scale_list); i++) {
         if(scale_list[i].scale == app->scale) {
