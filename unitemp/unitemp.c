@@ -257,12 +257,6 @@ static bool unitemp_alloc(void) {
     //Диспетчер окон
     app->view_dispatcher = view_dispatcher_alloc();
 
-    view_dispatcher_set_event_callback_context(app->view_dispatcher, app);
-    view_dispatcher_set_tick_event_callback(
-        app->view_dispatcher, unitemp_sensors_update_callback, 100);
-
-    app->view_port = view_port_alloc();
-
     app->sensors = NULL;
 
     app->buff = malloc(BUFF_SIZE);
@@ -279,9 +273,6 @@ static bool unitemp_alloc(void) {
 
     //Всплывающее окно
     app->popup = popup_alloc();
-
-    gui_add_view_port(app->gui, app->view_port, GuiLayerFullscreen);
-
     view_dispatcher_add_view(app->view_dispatcher, UnitempViewPopup, popup_get_view(app->popup));
 
     view_dispatcher_set_tick_event_callback(
@@ -312,11 +303,6 @@ static void unitemp_free(void) {
     free(app->buff);
 
     view_dispatcher_free(app->view_dispatcher);
-
-    view_port_enabled_set(app->view_port, false);
-    gui_remove_view_port(app->gui, app->view_port);
-    view_port_free(app->view_port);
-
     furi_record_close(RECORD_GUI);
     //Очистка датчиков
     //Высвыбождение данных датчиков
