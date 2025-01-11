@@ -14,7 +14,7 @@
 #include <jsmn/jsmn_furi.h>
 #include <flip_store_icons.h>
 
-#define TAG         "FlipStore"
+#define TAG "FlipStore"
 #define VERSION_TAG "FlipStore v0.8"
 
 #define FIRMWARE_COUNT 3
@@ -26,17 +26,18 @@
 #define MAX_GITHUB_FILES 30
 
 // Define the submenu items for our FlipStore application
-typedef enum {
+typedef enum
+{
     FlipStoreSubmenuIndexMain, // Click to start downloading the selected app
     FlipStoreSubmenuIndexAbout,
     FlipStoreSubmenuIndexSettings,
     //
     FlipStoreSubmenuIndexOptions, // Click to view the options
     //
-    FlipStoreSubmenuIndexAppList, // Click to view the app list
-    FlipStoreSubmenuIndexFirmwares, // Click to view the ESP32 firmwares
+    FlipStoreSubmenuIndexAppList,      // Click to view the app list
+    FlipStoreSubmenuIndexFirmwares,    // Click to view the ESP32 firmwares
     FlipStoreSubmenuIndexVGMFirmwares, // Click to view the VGM firmwares
-    FlipStoreSubmenuIndexGitHub, // Click to view the GitHub repository view
+    FlipStoreSubmenuIndexGitHub,       // Click to view the GitHub repository view
     //
     FlipStoreSubmenuIndexAppListBluetooth,
     FlipStoreSubmenuIndexAppListGames,
@@ -57,61 +58,63 @@ typedef enum {
 } FlipStoreSubmenuIndex;
 
 // Define a single view for our FlipStore application
-typedef enum {
+typedef enum
+{
     //
-    FlipStoreViewSubmenu, // The submenu
-    FlipStoreViewSubmenuOptions, // The submenu options
-        //
-    FlipStoreViewAbout, // The about screen
-    FlipStoreViewSettings, // The settings screen
-    FlipStoreViewTextInput, // The text input screen
-        //
-    FlipStoreViewAppList, // The app list screen
-    FlipStoreViewFirmwares, // The firmwares screen (submenu)
-    FlipStoreViewVGMFirmwares, // The VGM firmwares screen (submenu)
-    FlipStoreViewAGithub, // The GitHub repository screen
-        //
-    FlipStoreViewFirmwareDialog, // The firmware view (DialogEx) of the selected firmware
-        //
-    FlipStoreViewAppInfo, // The app info screen (widget) of the selected app
-    FlipStoreViewAppDownload, // The app download screen (widget) of the selected app
-    FlipStoreViewAppDelete, // The app delete screen (DialogEx) of the selected app
-        //
+    FlipStoreViewSubmenu,         // The submenu
+    FlipStoreViewSubmenuOptions,  // The submenu options
+                                  //
+    FlipStoreViewAbout,           // The about screen
+    FlipStoreViewSettings,        // The settings screen
+    FlipStoreViewTextInput,       // The text input screen
+                                  //
+    FlipStoreViewAppList,         // The app list screen
+    FlipStoreViewFirmwares,       // The firmwares screen (submenu)
+    FlipStoreViewVGMFirmwares,    // The VGM firmwares screen (submenu)
+    FlipStoreViewAGithub,         // The GitHub repository screen
+                                  //
+    FlipStoreViewFirmwareDialog,  // The firmware view (DialogEx) of the selected firmware
+                                  //
+    FlipStoreViewAppInfo,         // The app info screen (widget) of the selected app
+    FlipStoreViewAppDownload,     // The app download screen (widget) of the selected app
+    FlipStoreViewAppDelete,       // The app delete screen (DialogEx) of the selected app
+                                  //
     FlipStoreViewAppListCategory, // the app list screen for each category
-        //
-        //
-    FlipStoreViewWidgetResult, // The text box that displays the random fact
-    FlipStoreViewLoader, // The loader screen retrieves data from the internet
+                                  //
+                                  //
+    FlipStoreViewWidgetResult,    // The text box that displays the random fact
+    FlipStoreViewLoader,          // The loader screen retrieves data from the internet
 } FlipStoreView;
 
 // Each screen will have its own view
-typedef struct {
-    View* view_loader;
-    Widget* widget_result;
+typedef struct
+{
+    View *view_loader;
+    Widget *widget_result;
     //
-    ViewDispatcher* view_dispatcher; // Switches between our views
-    View* view_app_info; // The app info screen (view) of the selected app
+    ViewDispatcher *view_dispatcher; // Switches between our views
+    View *view_app_info;             // The app info screen (view) of the selected app
     //
-    DialogEx* dialog_firmware; // The dialog for installing a firmware
+    DialogEx *dialog_firmware; // The dialog for installing a firmware
     //
-    Submenu* submenu_main; // The submenu (main)
+    Submenu *submenu_main; // The submenu (main)
     //
-    Submenu* submenu_options; // The submenu (options)
-    Submenu* submenu_app_list; // The submenu (app list) for the selected category
-    Submenu* submenu_firmwares; // The submenu (firmwares)
-    Submenu* submenu_vgm_firmwares; // The submenu (VGM firmwares)
-    Submenu* submenu_app_list_category; // The submenu (app list) for each category
-    Widget* widget_about; // The widget
-    VariableItemList* variable_item_list; // The variable item list (settngs)
-    VariableItem* variable_item_ssid; // The variable item
-    VariableItem* variable_item_pass; // The variable item
+    Submenu *submenu_options;             // The submenu (options)
+    Submenu *submenu_app_list;            // The submenu (app list) for the selected category
+    Submenu *submenu_firmwares;           // The submenu (firmwares)
+    Submenu *submenu_vgm_firmwares;       // The submenu (VGM firmwares)
+    Submenu *submenu_app_list_category;   // The submenu (app list) for each category
+    Widget *widget_about;                 // The widget
+    VariableItemList *variable_item_list; // The variable item list (settngs)
+    VariableItem *variable_item_ssid;     // The variable item
+    VariableItem *variable_item_pass;     // The variable item
     //
-    TextInput* uart_text_input; // The text input
-    char* uart_text_input_buffer; // Buffer for the text input
-    char* uart_text_input_temp_buffer; // Temporary buffer for the text input
+    TextInput *uart_text_input;      // The text input
+    char *uart_text_input_buffer;         // Buffer for the text input
+    char *uart_text_input_temp_buffer;    // Temporary buffer for the text input
     uint32_t uart_text_input_buffer_size; // Size of the text input buffer
 } FlipStoreApp;
 
-void flip_store_app_free(FlipStoreApp* app);
+void flip_store_app_free(FlipStoreApp *app);
 
 #endif // FLIP_STORE_E_H

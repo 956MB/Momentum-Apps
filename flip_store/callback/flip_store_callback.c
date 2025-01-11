@@ -389,14 +389,14 @@ static void flip_store_text_updated_author(void *context)
     save_char("Github-Author", app->uart_text_input_buffer);
 
     view_dispatcher_switch_to_view(app->view_dispatcher, FlipStoreViewSubmenu);
-    uart_text_input_reset(app->uart_text_input);
-    uart_text_input_set_header_text(app->uart_text_input, "Repository");
+    text_input_reset(app->uart_text_input);
+    text_input_set_header_text(app->uart_text_input, "Repository");
     app->uart_text_input_buffer_size = 64;
     free(app->uart_text_input_buffer);
     free(app->uart_text_input_temp_buffer);
     easy_flipper_set_buffer(&app->uart_text_input_buffer, app->uart_text_input_buffer_size);
     easy_flipper_set_buffer(&app->uart_text_input_temp_buffer, app->uart_text_input_buffer_size);
-    uart_text_input_set_result_callback(app->uart_text_input, flip_store_text_updated_repo, app, app->uart_text_input_temp_buffer, app->uart_text_input_buffer_size, false);
+    text_input_set_result_callback(app->uart_text_input, flip_store_text_updated_repo, app, app->uart_text_input_temp_buffer, app->uart_text_input_buffer_size, false);
     view_dispatcher_switch_to_view(app->view_dispatcher, FlipStoreViewTextInput);
 }
 
@@ -707,7 +707,7 @@ static void free_text_input_view(FlipStoreApp *app)
     if (app->uart_text_input)
     {
         view_dispatcher_remove_view(app->view_dispatcher, FlipStoreViewTextInput);
-        uart_text_input_free(app->uart_text_input);
+        text_input_free(app->uart_text_input);
         app->uart_text_input = NULL;
     }
     if (app->uart_text_input_buffer)
