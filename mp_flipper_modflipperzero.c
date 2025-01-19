@@ -633,10 +633,10 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
 
         if(strstr(attribute, "SPEAKER_NOTE_") == &attribute[0]) {
             size_t len = strlen(attribute);
-            uint8_t octave = attribute[len - 1] - '0';
+            float octave = attribute[len - 1] - '0';
             bool is_sharp = attribute[len - 2] == 'S';
             size_t note_index = len - (is_sharp ? 3 : 2);
-            uint8_t note = UINT8_MAX;
+            float note = -1.0;
 
             for(size_t i = 0; i < strlen(notes); i++) {
                 if(notes[i] == attribute[note_index]) {
@@ -646,10 +646,10 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
                 }
             }
 
-            if(octave > 8 || note > 12) {
+            if(octave < 0.0 || octave > 8.0 || note < 0.0 || note > 12.0) {
                 dest[0] = mp_const_none;
             } else {
-                dest[0] = mp_obj_new_float(440.0 * pow(2.0, (octave * 12.0 + note * 1.0 - 57.0) / 12.0));
+                dest[0] = mp_obj_new_float(440.0 * pow(2.0, (octave * 12.0 + note - 57.0) / 12.0));
             }
 
             return;
