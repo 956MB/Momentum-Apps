@@ -745,6 +745,8 @@ MP_DEFINE_CONST_OBJ_TYPE(
     locals_dict,
     &flipperzero_uart_connection_locals_dict);
 
+static const char* notes = ['C', 'C', 'D', 'D', 'E', 'F', 'F', 'G', 'G', 'A', 'A', 'B'];
+
 void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
     if(dest[0] == MP_OBJ_NULL) {
         // load attribute
@@ -752,7 +754,21 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
         const char* attribute = qstr_str(attr);
 
         if(strstr(attribute, "SPEAKER_NOTE_") == &attribute[0]) {
-            dest[0] = mp_obj_new_int(42);
+            size_t len = strlen(attribute) - 1;
+            uint8_t octave = attribute[len] - '0';
+            bool is_sharp = attribute[len - 1] == 'S';
+            size_t note_index = len - (is_sharp ? 2 : 1);
+            uint8_t note = UINT8_MAX;
+
+            for(size_t i = 0; i < 12; i++) {
+                if(notes[i] == attribute[note_index]) {
+                    note = i + (is_sharp ? 1 : 0);
+
+                    break;
+                }
+            }
+
+            dest[0] = mp_obj_new_int(octave * 12 + note);
         }
     } else if(dest[1] == MP_OBJ_NULL) {
         // delete attribute
