@@ -625,7 +625,7 @@ static const char* notes = "CCDDEFFGGAAB";
 static const float base_frequency = 16.3515979;
 static const float const_factor = 1.05946309436;
 
-inline float get_frequency_by_note(const uint8_t octave, const char note, const bool is_sharp) {
+static inline float get_frequency_by_note(const uint8_t octave, const char note, const bool is_sharp) {
     float freq = base_frequency;
 
     for(size_t i = 0; i < octave; i++) {
