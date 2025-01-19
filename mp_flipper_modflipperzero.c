@@ -7,6 +7,7 @@
 #include "py/obj.h"
 #include "py/stream.h"
 #include "py/runtime.h"
+#include <string.h>
 
 #include "mp_flipper_modflipperzero.h"
 
@@ -744,6 +745,22 @@ MP_DEFINE_CONST_OBJ_TYPE(
     locals_dict,
     &flipperzero_uart_connection_locals_dict);
 
+static void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
+    if(dest[0] != MP_OBJ_NULL) {
+        return;
+    }
+
+    const char* attribute = qstr_str(attr);
+
+    if(strstr(attribute, "SPEAKER_NOTE_") == attribute[0]) {
+        print(attribute);
+    } else {
+        dest[0] = MP_OBJ_NULL;
+    }
+
+    dest[1] = MP_OBJ_SENTINEL;
+}
+
 static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
     // light
     {MP_OBJ_NEW_QSTR(MP_QSTR___name__), MP_OBJ_NEW_QSTR(MP_QSTR_flipperzero)},
@@ -987,6 +1004,7 @@ const mp_obj_module_t flipperzero_module = {
 };
 
 MP_REGISTER_MODULE(MP_QSTR_flipperzero, flipperzero_module);
+MP_REGISTER_MODULE_DELEGATION(flipperzero_module, flipperzero_module_attr);
 
 void mp_flipper_on_input(uint16_t button, uint16_t type) {
     if(mp_flipper_on_input_callback != NULL) {
