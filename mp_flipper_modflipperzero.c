@@ -745,7 +745,7 @@ MP_DEFINE_CONST_OBJ_TYPE(
     locals_dict,
     &flipperzero_uart_connection_locals_dict);
 
-static void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
+void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
     if(dest[0] != MP_OBJ_NULL) {
         return;
     }
