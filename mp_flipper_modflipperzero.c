@@ -645,7 +645,7 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
                 }
             }
 
-            dest[0] = mp_obj_new_float((octave * 12.0 + note - 57.0) / 12.0);
+            dest[0] = mp_obj_new_float(440.0 * pow(2, (octave * 12.0 + note - 57.0) / 12.0));
             //dest[0] = mp_obj_new_float(440 * pow(2, (octave * 12 + note - 57) / 12));
 
             return;
