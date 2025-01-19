@@ -746,21 +746,20 @@ MP_DEFINE_CONST_OBJ_TYPE(
     &flipperzero_uart_connection_locals_dict);
 
 void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
+    if(dest[0] != MP_OBJ_NULL) {
+        return;
+    }
+
     const char* attribute = qstr_str(attr);
-
-    dest[0] = attr;
-
-    return;
 
     if(strstr(attribute, "SPEAKER_NOTE_") == attribute[0]) {
         dest[0] = mp_obj_new_int(42);
 
         return;
     } else {
-        dest[0] = MP_OBJ_NULL;
+        dest[0] = mp_obj_new_int(13);
+        //dest[0] = MP_OBJ_NULL;
     }
-
-    dest[1] = MP_OBJ_SENTINEL;
 }
 
 static const mp_rom_map_elem_t flipperzero_module_globals_table[] = {
