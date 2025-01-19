@@ -651,8 +651,9 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
             } else {
                 float exponent = (octave * 12.0f + note - 57.0f) / 12.0f;
                 // dest[0] = mp_obj_new_float(440.0 * pow(2.0, (octave * 12.0 + note - 57.0) / 12.0));
-                //dest[0] = mp_obj_new_float(440.0f * pow(2.0f, exponent));
-                dest[0] = mp_obj_new_float(exponent);
+                float note = 440.0f * pow(2.0f, exponent);
+
+                dest[0] = mp_obj_new_float(note);
             }
 
             return;
