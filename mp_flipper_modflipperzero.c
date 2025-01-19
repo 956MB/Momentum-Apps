@@ -1,5 +1,3 @@
-#include "py/persistentcode.h"
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -624,6 +622,28 @@ MP_DEFINE_CONST_OBJ_TYPE(
     &flipperzero_uart_connection_locals_dict);
 
 static const char* notes = "CCDDEFFGGAAB";
+static const float base_frequency = 16.3515979;
+static const float const_factor = 1.05946309436;
+
+inline float get_frequency_by_note(const uint8_t octave, const char note, const bool is_sharp) {
+    float freq = base_frequency;
+
+    for(size_t i = 0; i < octave; i++) {
+        freq *= const_factor;
+    }
+
+    for(size_t j = 0; j < strlen(notes); j++) {
+        if(notes[j] == note) {
+            freq *= (is_sharp ? const_factor : 1.0);
+
+            return freq;
+        }
+
+        freq *= const_factor;
+    }
+
+    return -1.0;
+}
 
 void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
     if(dest[0] == MP_OBJ_NULL) {
@@ -633,27 +653,17 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
 
         if(strstr(attribute, "SPEAKER_NOTE_") == &attribute[0]) {
             size_t len = strlen(attribute);
-            float octave = attribute[len - 1] - '0';
+            uint8_t octave = attribute[len - 1] - '0';
             bool is_sharp = attribute[len - 2] == 'S';
             size_t note_index = len - (is_sharp ? 3 : 2);
-            float note = -1.0f;
+            uint8_t i_note = UINT8_MAX;
 
-            for(size_t i = 0; i < strlen(notes); i++) {
-                if(notes[i] == attribute[note_index]) {
-                    note = i + (is_sharp ? 1.0f : 0.0f);
+            float frequency = get_frequency_by_note(octave, attribute[note_index], is_sharp);
 
-                    break;
-                }
-            }
-
-            if(octave < 0.0 || octave > 8.0 || note < 0.0 || note > 12.0) {
+            if(octave > 8 || frequency < 0.0) {
                 dest[0] = mp_const_none;
             } else {
-                float exponent = (octave * 12.0f + note - 57.0f) / 12.0f;
-                // dest[0] = mp_obj_new_float(440.0 * pow(2.0, (octave * 12.0 + note - 57.0) / 12.0));
-                float note = 440.0f * (float)pow(2.0f, exponent);
-
-                dest[0] = mp_obj_new_float(note);
+                dest[0] = mp_obj_new_float(frequency);
             }
 
             return;
