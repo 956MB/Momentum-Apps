@@ -626,20 +626,22 @@ static const float base_frequency = 16.3515979;
 static const float const_factor = 1.05946309436;
 
 static inline float get_frequency_by_note(const uint8_t octave, const char note, const bool is_sharp) {
-    float freq = base_frequency;
+    float frequency = base_frequency;
 
     for(size_t i = 0; i < octave; i++) {
-        freq *= const_factor;
+        for(size_j = 0; j < 12; j++) {
+            frequency *= const_factor;
+        }
     }
 
-    for(size_t j = 0; j < strlen(notes); j++) {
+    for(size_t j = 0; j < 12; j++) {
         if(notes[j] == note) {
-            freq *= (is_sharp ? const_factor : 1.0);
+            frequency *= (is_sharp ? const_factor : 1.0);
 
-            return freq;
+            return frequency;
         }
 
-        freq *= const_factor;
+        frequency *= const_factor;
     }
 
     return -1.0;
