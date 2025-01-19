@@ -1,3 +1,7 @@
+## 1.7
+
+* Update to latest SDK version.
+
 ## 1.6
 
 * Added extra functions for the **random** module.

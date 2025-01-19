@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* [#6](https://github.com/ofabel/mp-flipper/issues/6): Update to latest SDK version.
+
 ## [1.6.0] - 2024-11-17
 
 ### Added
