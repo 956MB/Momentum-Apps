@@ -752,18 +752,18 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
         const char* attribute = qstr_str(attr);
 
         if(strstr(attribute, "SPEAKER_NOTE_") == attribute[0]) {
-            dest[0] = mp_obj_new_int(42);
+            // dest[0] = mp_obj_new_int(42);
         } else {
-            dest[0] = mp_obj_new_int(13);
+            // dest[0] = mp_obj_new_int(13);
         }
 
-        dest[1] = self_in;
+        // dest[1] = self_in;
     } else if(dest[1] == MP_OBJ_NULL) {
         // delete attribute
     } else {
         // store attribute
 
-        dest[0] = MP_OBJ_NULL;
+        // dest[0] = MP_OBJ_NULL;
     }
 }
 
