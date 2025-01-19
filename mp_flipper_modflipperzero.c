@@ -751,7 +751,7 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
 
         const char* attribute = qstr_str(attr);
 
-        if(strstr(attribute, "SPEAKER_NOTE_") == attribute[0]) {
+        if(strstr(attribute, "SPEAKER_NOTE_") == &attribute[0]) {
             dest[0] = mp_obj_new_int(42);
 
             dest[1] = self_in;
