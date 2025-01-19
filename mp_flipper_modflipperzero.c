@@ -636,11 +636,11 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
             float octave = attribute[len - 1] - '0';
             bool is_sharp = attribute[len - 2] == 'S';
             size_t note_index = len - (is_sharp ? 3 : 2);
-            float note = -1.0;
+            float note = -1.0f;
 
             for(size_t i = 0; i < strlen(notes); i++) {
                 if(notes[i] == attribute[note_index]) {
-                    note = i + (is_sharp ? 1 : 0);
+                    note = i + (is_sharp ? 1.0f : 0.0f);
 
                     break;
                 }
@@ -649,9 +649,10 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
             if(octave < 0.0 || octave > 8.0 || note < 0.0 || note > 12.0) {
                 dest[0] = mp_const_none;
             } else {
-                float exponent = (octave * 12.0 + note - 57.0) / 12.0;
+                float exponent = (octave * 12.0f + note - 57.0f) / 12.0f;
                 // dest[0] = mp_obj_new_float(440.0 * pow(2.0, (octave * 12.0 + note - 57.0) / 12.0));
-                dest[0] = mp_obj_new_float(440.0f * pow(2.0f, -4.75f));
+                //dest[0] = mp_obj_new_float(440.0f * pow(2.0f, exponent));
+                dest[0] = mp_obj_new_float(exponent);
             }
 
             return;
