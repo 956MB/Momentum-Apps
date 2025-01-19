@@ -33,8 +33,8 @@ now = datetime.datetime.now()
 project = 'uPython'
 copyright = str(now.year) + ', Oliver Fabel'
 author = 'Oliver Fabel'
-release = '1.6.0'
-version = '1.6'
+release = '1.7.0'
+version = '1.7'
 language = 'en'
 
 extensions = [
