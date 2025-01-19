@@ -1,3 +1,4 @@
+#include "py/persistentcode.h"
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -645,8 +646,11 @@ void flipperzero_module_attr(mp_obj_t self_in, qstr attr, mp_obj_t* dest) {
                 }
             }
 
-            //dest[0] = mp_obj_new_float(440.0 * pow(2.0, (octave * 12.0 + note - 57.0) / 12.0));
-            dest[0] = mp_obj_new_float(440 * pow(2.0, -57.0 / 12.0));
+            if(octave > 8 || note > 12) {
+                dest[0] = mp_const_none;
+            } else {
+                dest[0] = mp_obj_new_float(440.0 * pow(2.0, (octave * 12.0 + note * 1.0 - 57.0) / 12.0));
+            }
 
             return;
         }
