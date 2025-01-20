@@ -133,7 +133,7 @@ static bool flip_wifi_alloc_widgets(void *context, uint32_t widget)
     case FlipWiFiViewAbout:
         if (!app->widget_info)
         {
-            if (!easy_flipper_set_widget(&app->widget_info, FlipWiFiViewAbout, "FlipWiFi v1.3\n-----\nFlipperHTTP companion app.\nScan and save WiFi networks.\n-----\nwww.github.com/jblanked", callback_to_submenu_main, &app->view_dispatcher))
+            if (!easy_flipper_set_widget(&app->widget_info, FlipWiFiViewAbout, "FlipWiFi v1.3.2\n-----\nFlipperHTTP companion app.\nScan and save WiFi networks.\n-----\nwww.github.com/jblanked", callback_to_submenu_main, &app->view_dispatcher))
             {
                 return false;
             }
@@ -563,19 +563,35 @@ static bool flip_wifi_view_input_callback_saved(InputEvent *event, void *context
         // save the settings
         save_settings(wifi_playlist->ssids[ssid_index], wifi_playlist->passwords[ssid_index]);
 
-        flipper_http_save_wifi(wifi_playlist->ssids[ssid_index], wifi_playlist->passwords[ssid_index]);
+        // initialize uart
+        if (!flipper_http_init(flipper_http_rx_callback, app))
+        {
+            easy_flipper_dialog("[ERROR]", "Failed to initialize flipper http");
+            return false;
+        }
 
-        flipper_http_connect_wifi();
+        // clear response
+        if (fhttp.last_response)
+            snprintf(fhttp.last_response, RX_BUF_SIZE, "%s", "");
+
+        if (!flipper_http_save_wifi(wifi_playlist->ssids[ssid_index], wifi_playlist->passwords[ssid_index]))
+        {
+            easy_flipper_dialog("[ERROR]", "Failed to save WiFi settings");
+            return false;
+        }
+
+        while (!fhttp.last_response || strlen(fhttp.last_response) == 0)
+        {
+            furi_delay_ms(100);
+        }
+
+        flipper_http_deinit();
 
         easy_flipper_dialog("[SUCCESS]", "All FlipperHTTP apps will now\nuse the selected network.");
         return true;
     }
     else if (event->type == InputTypePress && event->key == InputKeyLeft)
     {
-        // delete the selected ssid and password
-        free(wifi_playlist->ssids[ssid_index]);
-        free(wifi_playlist->passwords[ssid_index]);
-        free(ssid_list[ssid_index]);
         // shift the remaining ssids and passwords
         for (uint32_t i = ssid_index; i < wifi_playlist->count - 1; i++)
         {
@@ -590,6 +606,10 @@ static bool flip_wifi_view_input_callback_saved(InputEvent *event, void *context
             ssid_list[i] = ssid_list[i + 1];
         }
         wifi_playlist->count--;
+
+        // delete the last ssid and password
+        wifi_playlist->ssids[wifi_playlist->count][0] = '\0';
+        wifi_playlist->passwords[wifi_playlist->count][0] = '\0';
 
         // save the playlist to storage
         save_playlist(wifi_playlist);
@@ -637,23 +657,13 @@ static bool flip_wifi_handle_scan(void *context)
     {
         FURI_LOG_E(TAG, "Failed to load received data from file.");
         fhttp.state = ISSUE;
-        easy_flipper_dialog("[ERROR]", "Failed to load received data from file.");
-        return false;
-    }
-    char *data_cstr = (char *)furi_string_get_cstr(scan_data);
-    if (data_cstr == NULL)
-    {
-        FURI_LOG_E(TAG, "Failed to get C-string from FuriString.");
-        furi_string_free(scan_data);
-        fhttp.state = ISSUE;
-        free(data_cstr);
-        easy_flipper_dialog("[ERROR]", "Failed to get C-string from FuriString.");
+        easy_flipper_dialog("[ERROR]", "Failed to load data from /apps_data/flip_wifi/data/scan.txt");
         return false;
     }
 
     uint32_t ssid_count = 0;
 
-    char *current_position = data_cstr;
+    char *current_position = (char *)furi_string_get_cstr(scan_data);
     char *next_comma = NULL;
 
     // Manually split the string on commas
@@ -679,7 +689,6 @@ static bool flip_wifi_handle_scan(void *context)
         {
             FURI_LOG_E(TAG, "Memory allocation failed");
             easy_flipper_dialog("[ERROR]", "Memory allocation failed");
-            free(data_cstr);
             furi_string_free(scan_data);
             return false;
         }
@@ -736,7 +745,6 @@ static bool flip_wifi_handle_scan(void *context)
         snprintf(ssid, sizeof(ssid), "%s", ssid_item);
         submenu_add_item(app->submenu_wifi, ssid, FlipWiFiSubmenuIndexWiFiScanStart + i, callback_submenu_choices, app);
     }
-    free(data_cstr);
     furi_string_free(scan_data);
     return true;
 }
@@ -767,6 +775,15 @@ void callback_submenu_choices(void *context, uint32_t index)
         {
             return flip_wifi_handle_scan(app);
         }
+        Storage *storage = furi_record_open(RECORD_STORAGE);
+        // ensure flip_wifi directory is there
+        char directory_path[128];
+        snprintf(directory_path, sizeof(directory_path), STORAGE_EXT_PATH_PREFIX "/apps_data/flip_wifi");
+        storage_common_mkdir(storage, directory_path);
+        // ensure directory is there for saving data
+        snprintf(directory_path, sizeof(directory_path), STORAGE_EXT_PATH_PREFIX "/apps_data/flip_wifi/data");
+        storage_common_mkdir(storage, directory_path);
+        furi_record_close(RECORD_STORAGE);
         // scan for wifi ad parse the results
         flipper_http_loading_task(flipper_http_scan_wifi, _flip_wifi_handle_scan, FlipWiFiViewSubmenu, FlipWiFiViewSubmenuMain, &app->view_dispatcher);
         flipper_http_deinit();
@@ -1012,11 +1029,12 @@ void flip_wifi_text_updated_add_password(void *context)
 
     // store the entered text
     strncpy(app->uart_text_input_buffer, app->uart_text_input_temp_buffer, app->uart_text_input_buffer_size);
-
-    save_char("wifi-password", app->uart_text_input_buffer);
-
     // Ensure null-termination
     app->uart_text_input_buffer[app->uart_text_input_buffer_size - 1] = '\0';
+
+    view_dispatcher_switch_to_view(app->view_dispatcher, FlipWiFiViewSubmenuMain);
+
+    save_char("wifi-password", app->uart_text_input_buffer);
 
     char wifi_ssid[64];
     if (!load_char("wifi-ssid", wifi_ssid, sizeof(wifi_ssid)))

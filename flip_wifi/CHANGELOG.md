@@ -1,3 +1,11 @@
+## v1.3.2
+- Fixed a crash that occurred when deleting a network from the Saved APs list.
+- Updated to connect to the network after clicking "Set" on the selected SSID in the Saved APs list.
+
+## v1.3.1
+- Fixed a loading error that occurred when scanning networks.
+- Fixed a freeze that occurred when saving networks manually.
+
 ## v1.3  
 - Updated to save credentials for the FlipWorld game.  
 - Added fast commands: CUSTOM, PING, LIST, IP/ADDRESS, and WIFI/IP.  
