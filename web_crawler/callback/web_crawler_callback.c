@@ -437,7 +437,7 @@ static void free_text_input(WebCrawlerApp *app)
     if (app->uart_text_input)
     {
         view_dispatcher_remove_view(app->view_dispatcher, WebCrawlerViewInput);
-        uart_text_input_free(app->uart_text_input);
+        text_input_free(app->uart_text_input);
         app->uart_text_input = NULL;
     }
     // check and free path
