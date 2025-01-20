@@ -331,7 +331,7 @@ static void key_copier_view_measure_draw_callback(Canvas* canvas, void* model) {
     int bottom_post_extra_x_px = 0; // new
     int bottom_pre_extra_x_px = 0; // new
     int level_contour_px =
-    (int)round((my_format.last_pin_inch + my_format.elbow_inch) / inches_per_px);
+        (int)round((my_format.last_pin_inch + my_format.elbow_inch) / inches_per_px);
     for(int current_pin = 1; current_pin <= my_model->format.pin_num; current_pin += 1) {
         double current_center_px =
             my_format.first_pin_inch + (current_pin - 1) * my_format.pin_increment_inch;
