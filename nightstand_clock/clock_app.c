@@ -190,9 +190,18 @@ static void clock_render_callback(Canvas* const canvas, void* ctx) {
         int32_t elapsed_secs = timer_running ? (curr_ts - timer_start_timestamp) :
                                                timer_stopped_seconds;
         snprintf(timer_string, 20, "%.2ld:%.2ld", elapsed_secs / 60, elapsed_secs % 60);
-        canvas_draw_str_aligned(canvas, 64, 8, AlignCenter, AlignCenter, time_string); // DRAW TIME
+        if(state->time_format == LocaleTimeFormat12h) {
+            canvas_draw_str_aligned(
+                canvas, 56, 8, AlignCenter, AlignCenter, time_string); // DRAW TIME
+        } else {
+            canvas_draw_str_aligned(
+                canvas, 64, 8, AlignCenter, AlignCenter, time_string); // DRAW TIME
+        }
         canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignTop, timer_string); // DRAW TIMER
         canvas_set_font(canvas, FontSecondary);
+        if(state->time_format == LocaleTimeFormat12h) {
+            canvas_draw_str_aligned(canvas, 112, 8, AlignCenter, AlignCenter, meridian_string);
+        }
 
         snprintf(
             date_pct_string, sizeof(date_pct_string), "%s   %u%%", date_string, state->battery_pct);
@@ -214,9 +223,8 @@ static void clock_render_callback(Canvas* const canvas, void* ctx) {
             canvas_draw_str_aligned(canvas, 64, 48, AlignCenter, AlignCenter, meridian_string);
         } else {
             canvas_draw_str_aligned(canvas, 64, 17, AlignCenter, AlignCenter, date_string);
-            char pct_string[BATTERY_LEN + 1];
-            snprintf(pct_string, sizeof(pct_string), "%u%%", state->battery_pct);
-            canvas_draw_str_aligned(canvas, 64, 48, AlignCenter, AlignCenter, pct_string);
+            snprintf(date_pct_string, sizeof(date_pct_string), "%u%%", state->battery_pct);
+            canvas_draw_str_aligned(canvas, 64, 48, AlignCenter, AlignCenter, date_pct_string);
         }
     }
     if(timer_running) {
