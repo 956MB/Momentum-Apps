@@ -53,7 +53,6 @@ typedef enum {
 extern const NfcDataGeneratorType ntag_generators[NtagMAX];
 extern const char* ntag_names[NtagMAX];
 extern const size_t ntag_sizes[NtagMAX];
-#define MAX_NDEF_LEN ntag_sizes[NtagI2C2K]
 
 typedef enum {
     WifiAuthenticationOpen = 0x01,
@@ -82,6 +81,7 @@ typedef struct {
 
     NfcDevice* nfc_device;
     uint8_t* ndef_buffer;
+    size_t ndef_size;
 
     uint8_t mac_buf[MAC_INPUT_LEN];
     char mail_buf[MAIL_INPUT_LEN];

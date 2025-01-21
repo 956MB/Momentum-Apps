@@ -73,7 +73,6 @@ NfcMaker* nfc_maker_alloc() {
 
     // Nfc Device
     app->nfc_device = nfc_device_alloc();
-    app->ndef_buffer = malloc(MAX_NDEF_LEN);
 
     return app;
 }
@@ -83,7 +82,9 @@ void nfc_maker_free(NfcMaker* app) {
 
     // Nfc Device
     nfc_device_free(app->nfc_device);
-    free(app->ndef_buffer);
+    if(app->ndef_buffer) {
+        free(app->ndef_buffer);
+    }
 
     // Gui modules
     view_dispatcher_remove_view(app->view_dispatcher, NfcMakerViewSubmenu);
