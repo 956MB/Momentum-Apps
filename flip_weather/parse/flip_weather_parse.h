@@ -9,7 +9,8 @@ extern bool weather_information_processed;
 
 // Add edits by Derek Jamison
 typedef enum DataState DataState;
-enum DataState {
+enum DataState
+{
     DataStateInitial,
     DataStateRequested,
     DataStateReceived,
@@ -19,30 +20,32 @@ enum DataState {
 };
 
 typedef enum FlipWeatherCustomEvent FlipWeatherCustomEvent;
-enum FlipWeatherCustomEvent {
+enum FlipWeatherCustomEvent
+{
     FlipWeatherCustomEventProcess,
 };
 
 typedef struct DataLoaderModel DataLoaderModel;
-typedef bool (*DataLoaderFetch)(DataLoaderModel* model);
-typedef char* (*DataLoaderParser)(DataLoaderModel* model);
-struct DataLoaderModel {
-    char* title;
-    char* data_text;
+typedef bool (*DataLoaderFetch)(DataLoaderModel *model);
+typedef char *(*DataLoaderParser)(DataLoaderModel *model);
+struct DataLoaderModel
+{
+    char *title;
+    char *data_text;
     DataState data_state;
     DataLoaderFetch fetcher;
     DataLoaderParser parser;
-    void* parser_context;
+    void *parser_context;
     size_t request_index;
     size_t request_count;
     ViewNavigationCallback back_callback;
-    FuriTimer* timer;
+    FuriTimer *timer;
 };
 
 bool send_geo_location_request();
-char* process_geo_location(DataLoaderModel* model);
+char *process_geo_location(DataLoaderModel *model);
 bool process_geo_location_2();
-char* process_weather(DataLoaderModel* model);
-bool send_geo_weather_request(DataLoaderModel* model);
+char *process_weather(DataLoaderModel *model);
+bool send_geo_weather_request(DataLoaderModel *model);
 
 #endif
