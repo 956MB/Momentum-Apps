@@ -91,6 +91,8 @@ typedef struct {
     char small_buf1[SMALL_INPUT_LEN];
     char small_buf2[SMALL_INPUT_LEN];
     char save_buf[BIG_INPUT_LEN];
+
+    uint8_t uid_buf[10];
 } NfcMaker;
 
 typedef enum {

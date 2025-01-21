@@ -340,7 +340,7 @@ bool nfc_maker_scene_save_generate_on_event(void* context, SceneManagerEvent eve
         nfc_device_set_data(app->nfc_device, NfcProtocolMfUltralight, data);
         mf_ultralight_free(data);
 
-        scene_manager_next_scene(app->scene_manager, NfcMakerSceneSaveName);
+        scene_manager_next_scene(app->scene_manager, NfcMakerSceneSaveUidMful);
     }
 
     return consumed;
