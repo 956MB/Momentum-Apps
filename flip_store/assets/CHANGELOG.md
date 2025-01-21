@@ -1,3 +1,17 @@
+## v0.8
+- Updated FlipperHTTP to the latest library.
+- Switched to use Flipper catalog API.
+- Added an option to download Video Game Module firmware (FlipperHTTP)
+- Added an option to download Github repositories.
+- Updated Marauder to the version 1.2
+
+## v0.7.2
+- Final memory allocation improvements
+
+## v0.7.1
+- Improved memory allocation
+- Fixed a crash when re-entering the same app list  
+
 ## v0.7
 - Improved memory allocation
 - Added updates from Derek Jamison

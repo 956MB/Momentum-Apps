@@ -1,3 +1,15 @@
+## 1.0.1
+- Updated the settings so they save as intended.
+- Added additional error handling.
+- Fixed a bug in the text input that prevented users from typing.
+
+## 1.0
+- Updated the HTTP Method toggle to work as intended.
+- Updated FlipperHTTP to the latest version.
+- Improved memory allocation
+- Fixed loading display messages.
+- Added a BROWSE method, which fetches HTML data from the specified path, parses the HTML, then displays the data as a "webpage". 
+
 ## 0.8
 Updates from Derek Jamison:
 - Improved progress display.

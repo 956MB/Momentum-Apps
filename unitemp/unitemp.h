@@ -40,7 +40,7 @@
 //Имя приложения
 #define APP_NAME              "Unitemp"
 //Версия приложения
-#define UNITEMP_APP_VER       "1.4-store"
+#define UNITEMP_APP_VER       "1.6"
 //Путь хранения файлов плагина
 #define APP_PATH_FOLDER       EXT_PATH("apps_data/unitemp")
 //Имя файла с настройками
@@ -93,8 +93,8 @@ typedef struct {
 //Основная структура плагина
 typedef struct {
     //Система
-    bool processing; //Флаг работы приложения. При ложном значении приложение закрывается
     bool sensors_ready; //Флаг готовности датчиков к опросу
+    bool sensors_update; // Флаг допустимости опроса датчиков
     //Основные настройки
     UnitempSettings settings;
     //Массив указателей на датчики
@@ -107,7 +107,6 @@ typedef struct {
 
     //Экран
     Gui* gui;
-    ViewPort* view_port;
     ViewDispatcher* view_dispatcher;
     NotificationApp* notifications;
     Widget* widget;
