@@ -656,7 +656,7 @@ TextInput* text_input_alloc(void) {
         {
             model->validator_text = furi_string_alloc();
             model->minimum_length = 1;
-            model->illegal_symbols = true;
+            model->illegal_symbols = false;
             model->cursor_pos = 0;
             model->cursor_select = false;
         },
@@ -696,7 +696,7 @@ void text_input_reset(TextInput* text_input) {
             model->selected_column = 0;
             model->selected_keyboard = 0;
             model->minimum_length = 1;
-            model->illegal_symbols = true;
+            model->illegal_symbols = false;
             model->clear_default_text = false;
             model->cursor_pos = 0;
             model->cursor_select = false;
