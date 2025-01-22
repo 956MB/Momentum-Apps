@@ -154,10 +154,14 @@ static void clock_render_callback(Canvas* const canvas, void* ctx) {
         bool pm12 = curr_dt.hour >= 12;
         uint8_t hour = curr_dt.hour;
 
-        if(hour > 12) {
-            hour -= 12;
-        } else if(hour == 0) {
-            hour = momentum_settings.midnight_format_00 ? 0 : 12;
+        LocaleTimeFormat time_format = locale_get_time_format();
+        if(time_format == LocaleTimeFormat12h) {
+            if(hour > 12) {
+                hour -= 12;
+            }
+            if(hour == 0) {
+                hour = momentum_settings.midnight_format_00 ? 0 : 12;
+            }
         }
 
         snprintf(time_string, TIME_LEN, CLOCK_TIME_FORMAT, hour, curr_dt.minute, curr_dt.second);
