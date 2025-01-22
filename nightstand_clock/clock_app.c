@@ -7,6 +7,7 @@
 #include <notification/notification.h>
 #include <notification/notification_messages.h>
 #include <notification/notification_app.h>
+#include <momentum/momentum.h>
 
 #include "clock_app.h"
 
@@ -154,7 +155,7 @@ static void clock_render_callback(Canvas* const canvas, void* ctx) {
         if(hour > 12) {
             hour -= 12;
         } else if(hour == 0) {
-            hour = (state->midnight_format == LocaleMidnightFormatZero) ? 0 : 12;
+            hour = momentum_settings.midnight_format_00 ? 0 : 12;
         }
 
         snprintf(time_string, TIME_LEN, CLOCK_TIME_FORMAT, hour, curr_dt.minute, curr_dt.second);
@@ -211,7 +212,6 @@ static void clock_render_callback(Canvas* const canvas, void* ctx) {
 
 static void clock_state_init(ClockState* const state) {
     state->time_format = locale_get_time_format();
-    state->midnight_format = locale_get_midnight_format();
     state->date_format = locale_get_date_format();
 
     //FURI_LOG_D(TAG, "Time format: %s", state->settings.time_format == H12 ? "12h" : "24h");
