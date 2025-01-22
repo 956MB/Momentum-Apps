@@ -9,6 +9,6 @@
  * @brief      Function to allocate resources for the WebCrawlerApp.
  * @return     Pointer to the initialized WebCrawlerApp, or NULL on failure.
  */
-WebCrawlerApp* web_crawler_app_alloc();
+WebCrawlerApp *web_crawler_app_alloc();
 
 #endif // WEB_CRAWLER_I_H
